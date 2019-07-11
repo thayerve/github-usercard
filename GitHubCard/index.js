@@ -4,7 +4,7 @@
 */
 axios.get(`https://api.github.com/users/thayerve`)
 .then(data => {
-  console.log(data);
+  // console.log(data);
   createCard(data);
 })
 .catch(error =>{
@@ -16,19 +16,43 @@ axios.get(`https://api.github.com/users/thayerve`)
            create a new component and add it to the DOM as a child of .cards
 */
 
-
 /* Step 5: Now that you have your own card getting added to the DOM, either 
-          follow this link in your browser https://api.github.com/users/<Your github name>/followers 
+          follow this link in your browser https://api.github.com/users/thayerve/followers 
           , manually find some other users' github handles, or use the list found 
           at the bottom of the page. Get at least 5 different Github usernames and add them as
-          Individual strings to the friendsArray below.
+          Individual strings to the followersArray below.
           
           Using that array, iterate over it, requesting data for each user, creating a new card for each
           user, and adding that card to the DOM.
 */
 
-// const followersArray = [];
-// ^ UNCOMMENT THIS ********
+const followersArray = [];
+followersArray.push('justsml', 'bigknell');
+axios.get('https://api.github.com/users/thayerve/followers')
+.then(data => {
+  console.log('returned data from followers: ', data.data);
+  data.data.forEach(el => {followersArray.push(el.login)});
+  
+  console.log('created followersArray: ', followersArray);
+
+  followersArray.forEach(follower => {
+    axios.get(`https://api.github.com/users/${follower}`)
+    .then(data => {
+      createCard(data);
+      console.log('created card for ', follower);
+    })
+    .catch(error =>{
+      console.log('an error occurred while trying to create card for follower: ', error)
+    })
+  })
+})
+
+.catch (error => {
+  console.log('error with the followersArray', error)
+})
+
+
+
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
@@ -96,8 +120,8 @@ function createCard(object) {
   cardInfo.appendChild(followingP);
   cardInfo.appendChild(bioP);
 
-return card;
-}
+  return card;
+} // end of createCard function block
 
 /* List of LS Instructors Github username's: 
   tetondan
